@@ -16,6 +16,7 @@ import {
 } from 'src/constants/articleProps';
 import { RadioGroup } from 'src/ui/radio-group';
 import { Separator } from 'src/ui/separator';
+import { Text } from 'src/ui/text';
 
 type ArticleParamsFormProps = {
 	appState: ArticleStateType;
@@ -99,6 +100,9 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 				className={clsx(styles.container, isOpen && styles.container_open)}
 				ref={asideRef}>
 				<form className={styles.form}>
+					<Text size={31} weight={800} family={'open-sans'} uppercase={true}>
+						Задайте параметры
+					</Text>
 					<Select
 						selected={fontFamilyOption}
 						options={fontFamilyOptions}
