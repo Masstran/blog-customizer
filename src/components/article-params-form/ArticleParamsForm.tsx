@@ -19,42 +19,40 @@ import { Separator } from 'src/ui/separator';
 import { Text } from 'src/ui/text';
 
 type ArticleParamsFormProps = {
-	appState: ArticleStateType;
-	setAppState: React.Dispatch<React.SetStateAction<ArticleStateType>>;
+	articleState: ArticleStateType;
+	setArticleState: React.Dispatch<React.SetStateAction<ArticleStateType>>;
 };
 
 export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 	const asideRef = useRef<HTMLElement>(null);
 
-	const [isOpen, setIsOpen] = useState(false);
-
-	const closeForm = () => {
-		setIsOpen(false);
-	};
+	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
 	const [fontFamilyOption, setFontFamilyOption] = useState(
-		props.appState.fontFamilyOption
+		props.articleState.fontFamilyOption
 	);
 
 	const [fontSizeOption, setFontSizeOption] = useState(
-		props.appState.fontSizeOption
+		props.articleState.fontSizeOption
 	);
 
-	const [fontColor, setFontColor] = useState(props.appState.fontColor);
+	const [fontColor, setFontColor] = useState(props.articleState.fontColor);
 
 	const [backgroundColor, setBackgroundColor] = useState(
-		props.appState.backgroundColor
+		props.articleState.backgroundColor
 	);
 
-	const [contentWidth, setContentWidth] = useState(props.appState.contentWidth);
+	const [contentWidth, setContentWidth] = useState(
+		props.articleState.contentWidth
+	);
 
 	useEffect(() => {
-		if (!isOpen) return;
+		if (!isSidebarOpen) return;
 
 		const handleClickOutside = (e: MouseEvent) => {
 			const target = e.target as Node;
 			if (asideRef.current && !asideRef.current.contains(target)) {
-				setIsOpen(false);
+				setIsSidebarOpen(false);
 			}
 		};
 
@@ -63,43 +61,49 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 		return () => {
 			document.removeEventListener('mousedown', handleClickOutside);
 		};
-	}, [isOpen]);
+	}, [isSidebarOpen]);
 
 	const handleReset = (e: React.FormEvent) => {
 		e.preventDefault();
-		props.setAppState(defaultArticleState);
+		props.setArticleState(defaultArticleState);
 		setFontFamilyOption(defaultArticleState.fontFamilyOption);
 		setFontSizeOption(defaultArticleState.fontSizeOption);
 		setFontColor(defaultArticleState.fontColor);
 		setBackgroundColor(defaultArticleState.backgroundColor);
 		setContentWidth(defaultArticleState.contentWidth);
-		closeForm();
+		setIsSidebarOpen(false);
 	};
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		props.setAppState({
+		props.setArticleState({
 			fontFamilyOption,
 			fontSizeOption,
 			fontColor,
 			backgroundColor,
 			contentWidth,
 		});
-		closeForm();
+		setIsSidebarOpen(false);
 	};
 
 	return (
 		<>
 			<ArrowButton
-				isOpen={isOpen}
+				isOpen={isSidebarOpen}
 				onClick={() => {
-					setIsOpen((old) => !old);
+					setIsSidebarOpen((prev) => !prev);
 				}}
 			/>
 			<aside
-				className={clsx(styles.container, isOpen && styles.container_open)}
+				className={clsx(
+					styles.container,
+					isSidebarOpen && styles.container_open
+				)}
 				ref={asideRef}>
-				<form className={styles.form}>
+				<form
+					className={styles.form}
+					onReset={handleReset}
+					onSubmit={handleSubmit}>
 					<Text size={31} weight={800} family={'open-sans'} uppercase={true}>
 						Задайте параметры
 					</Text>
@@ -146,18 +150,8 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 						}}
 					/>
 					<div className={styles.bottomContainer}>
-						<Button
-							title='Сбросить'
-							htmlType='reset'
-							type='clear'
-							onClick={handleReset}
-						/>
-						<Button
-							title='Применить'
-							htmlType='submit'
-							type='apply'
-							onClick={handleSubmit}
-						/>
+						<Button title='Сбросить' htmlType='reset' type='clear' />
+						<Button title='Применить' htmlType='submit' type='apply' />
 					</div>
 				</form>
 			</aside>

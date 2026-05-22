@@ -10,7 +10,7 @@ export const Button = ({
 	type,
 }: {
 	title: string;
-	onClick?: (e: React.FormEvent) => void;
+	onClick?: () => void;
 	htmlType?: React.ButtonHTMLAttributes<HTMLButtonElement>['type'];
 	type: 'apply' | 'clear';
 }) => {
